@@ -33,18 +33,31 @@ jobs:
             
           
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7.0.8
+        uses: actions/github-script@v7
         with:
-          branch: main
-          base: prod-scripts
-          title: "Sync production scripts from main"
-          body: |
-            This PR was automatically created to sync production scripts with main.
+          script: |
+            const { data: existingPRs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: 'main',
+              base: 'prod-scripts',
+              state: 'open'
+            });
             
-            Changes in the following paths triggered this PR:
-            - .github/
-            - install/*.ps1
-            - install/cluster/prod*/
-            - install/cloud/
-            - cluster/cloudwatch/aws-collectors/
-          delete-branch: false
+            if (existingPRs.length === 0) {
+              await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'Sync production scripts from main',
+                head: 'main',
+                base: 'prod-scripts',
+                body: `This PR was automatically created to sync production scripts with main.
+                
+                Changes in the following paths triggered this PR:
+                - .github/
+                - install/*.ps1
+                - install/cluster/prod*/
+                - install/cloud/
+                - cluster/cloudwatch/aws-collectors/`
+              });
+            }
