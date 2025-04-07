@@ -1,0 +1,44 @@
+name: Make a Release
+on:
+  workflow_dispatch:
+    inputs:
+      ci_flags:
+        description: "Extra CI Flags"
+        required: false
+        default: ""
+
+jobs:
+  build_release:
+    runs-on: ubuntu-latest
+    name: "Build Release"
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+        # we need past tags
+        with:
+          fetch-depth: 0
+      - name: Prepare
+        shell: bash
+        run: |
+          git config --local user.email "payara-cloud-release@payara.fish"
+          git config --local user.name "Payara Cloud Release [bot]"
+      - run: | 
+          date > release.txt
+          git add -A
+          git commit -m "This is a release"
+
+      - name: Make Release PR
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          branch: release
+          branch-suffix: timestamp
+          title: "Payara Cloud Release"
+          labels: "RELEASE"
+          body: |-
+            ### DO NOT  MERGE, Approve instead
+            
+            Approve this PR to publish helm chart

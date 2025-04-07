@@ -1,0 +1,33 @@
+name: Finish a Release
+on:
+  pull_request_review:
+    {}
+
+jobs:
+  build_release:
+    runs-on: ubuntu-latest
+    name: "Build Release"
+    if: contains(github.event.pull_request.labels.*.name, 'RELEASE') && github.event.review.state == 'approved'
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+        # we need past tags
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Prepare
+        run: |
+          git config --local user.email "payara-cloud-release@payara.fish"
+          git config --local user.name "Payara Cloud Release [bot]"
+
+      - name: Finish Release
+        run: |
+           date >> release.txt
+           git add -A
+           git commit -m "This is a release"
+           git merge -m "Merge release" origin/main
+           git push --tags origin HEAD:main

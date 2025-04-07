@@ -1,0 +1,41 @@
+name: Sync Production Scripts
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/**'
+      - 'install/*.ps1'
+      - 'install/cluster/prod*/**'
+      - 'install/cloud/**'
+      - 'cluster/cloudwatch/aws-collectors/**'
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          branch: prod-scripts
+          base: main
+          title: "Sync production scripts from main"
+          body: |
+            This PR was automatically created to sync production scripts with main.
+            
+            Changes in the following paths triggered this PR:
+            - .github/
+            - install/*.ps1
+            - install/cluster/prod*/
+            - install/cloud/
+            - cluster/cloudwatch/aws-collectors/
+            
+            Please review and approve with at least two reviewers.
+          labels: "automated,production" 
