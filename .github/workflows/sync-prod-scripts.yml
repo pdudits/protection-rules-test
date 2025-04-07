@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 2
           ssh-key: ${{ secrets.RELEASE_KEY }}
 
       - name: Prepare
@@ -30,12 +30,12 @@ jobs:
             # This might be incorrect change to display if the push spanned
             # multiple commits, but it's better than nothing.
             git push --force origin HEAD^:prod-scripts
+            
           
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7.0.8
         with:
-          branch: prod-scripts-update/update
-          branch-suffix: timestamp
+          branch: main
           base: prod-scripts
           title: "Sync production scripts from main"
           body: |
@@ -47,3 +47,4 @@ jobs:
             - install/cluster/prod*/
             - install/cloud/
             - cluster/cloudwatch/aws-collectors/
+          delete-branch: false
