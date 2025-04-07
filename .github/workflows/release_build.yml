@@ -27,8 +27,7 @@ jobs:
           git config --local user.email "payara-cloud-release@payara.fish"
           git config --local user.name "Payara Cloud Release [bot]"
           # move release branch to base of this PR
-          git branch -f release
-          git push origin release
+          git push --force origin HEAD:release
       - run: | 
           date > release.txt
           git add -A
