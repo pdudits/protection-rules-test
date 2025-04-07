@@ -38,7 +38,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7.0.8
         with:
           base: release
-          branch: release/r
+          branch: release-build/r
           branch-suffix: timestamp
           title: "Payara Cloud Release"
           labels: "RELEASE"
