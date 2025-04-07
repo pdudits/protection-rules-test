@@ -1,0 +1,26 @@
+name: Sync Production Scripts Approval
+on:
+  pull_request_review:
+    types: submitted
+  
+jobs:
+  build_release:
+    runs-on: ubuntu-latest
+    name: "Sync branch"
+    if: github.event.pull_request.base.ref == 'prod-scripts' && github.event.review.state == 'approved'
+
+    steps:
+      - uses: actions/checkout@v4
+        # we need past tags
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+          ssh-key: ${{ secrets.RELEASE_KEY }}
+      - name: Prepare
+        run: |
+          git config --local user.email "payara-cloud-release@payara.fish"
+          git config --local user.name "Payara Cloud Release [bot]"
+
+      - name: Merge
+        run: |
+           git push --force origin HEAD:prod-scripts

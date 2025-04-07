@@ -1,7 +1,8 @@
 name: Finish a Release
 on:
   pull_request_review:
-    {}
+    types: submitted
+
 
 jobs:
   build_release:
