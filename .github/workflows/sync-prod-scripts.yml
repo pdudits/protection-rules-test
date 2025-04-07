@@ -27,8 +27,9 @@ jobs:
         run: |
             git config --local user.email "payara-cloud-release@payara.fish"
             git config --local user.name "Payara Cloud Release [bot]"
-            # move release branch to base of this PR
-            git push --force origin HEAD:prod-scripts
+            # This might be incorrect change to display if the push spanned
+            # multiple commits, but it's better than nothing.
+            git push --force origin HEAD^:prod-scripts
           
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7.0.8
