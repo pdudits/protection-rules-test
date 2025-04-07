@@ -26,6 +26,9 @@ jobs:
         run: |
           git config --local user.email "payara-cloud-release@payara.fish"
           git config --local user.name "Payara Cloud Release [bot]"
+          # move release branch to base of this PR
+          git branch -f release
+          git push origin release
       - run: | 
           date > release.txt
           git add -A
@@ -34,7 +37,8 @@ jobs:
       - name: Make Release PR
         uses: peter-evans/create-pull-request@v7.0.8
         with:
-          branch: release
+          base: release
+          branch: release/
           branch-suffix: timestamp
           title: "Payara Cloud Release"
           labels: "RELEASE"
