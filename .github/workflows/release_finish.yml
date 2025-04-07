@@ -31,3 +31,4 @@ jobs:
            git commit -m "This is a release"
            git merge -m "Merge release" origin/main
            git push --tags origin HEAD:main
+           git push origin HEAD:release
